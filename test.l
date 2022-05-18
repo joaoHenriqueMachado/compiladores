@@ -1,6 +1,6 @@
 programa maior ;
 var
- x , y : inteiro ;
+ x , y : inteiro;
  inicio
  leia ( x ) ;
  leia ( y ) ;
