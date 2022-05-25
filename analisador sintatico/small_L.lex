@@ -60,15 +60,15 @@ prog "programa"
 ","                 {yylval = yytext[0]; return COMMA;}  
 "("                 {yylval = yytext[0]; return PARENT_OPEN;}  
 ")"                 {yylval = yytext[0]; return PARENT_CLOSE;} 
-{zeroErro}          //{printf("(<ERRO>,%d) ", lines); errCount++;}
-{zeroNegErro}       //{printf("(<ERRO>,%d) ", lines); errCount++;}
+{zeroErro}          {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
+{zeroNegErro}       {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 {booleano}          {yylval = yytext[0]; return NUM;}                  
 {real}              {yylval = yytext[0]; return NUM;} 
 {inteiro}           {yylval = yytext[0]; return NUM;}                  
 {id}                {yylval = yytext[0]; return ID;}
-{digitoErro}        //{printf("(<ERRO>,%d) ", lines); errCount++;} 
-{idErro}            //{printf("(<ERRO>,%d) ", lines); errCount++;}
-.                   //{printf("(<ERRO>,%d) ", lines); errCount++;}
+{digitoErro}        {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
+{idErro}            {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
+.                   {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 %%
 
 /*int main(char *f){

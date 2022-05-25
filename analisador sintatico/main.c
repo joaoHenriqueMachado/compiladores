@@ -4,7 +4,8 @@
 extern int yyparse (void);
 
 void yyerror(char const *message){
-    printf("\nError: %s", message);
+    //printf("\nError: %s", message);
+    printf("\nSintaticamente incorreto");
 }
 
 int main(int argc, char const *argv[]) {

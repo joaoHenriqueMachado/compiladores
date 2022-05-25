@@ -32,28 +32,41 @@ Tipo: TYPE_INTEGER {printf("T -> inteiro\n");}
         | TYPE_FLOAT {printf("T -> real\n");} 
         | TYPE_BOOLEAN {printf("T -> booleano\n");}
         ;
-Comandos: Comando {printf("CS -> C ;\n");} 
+Comandos: Comando {printf("CS -> C \n");} 
         | Comando SCOLON Comandos {printf("CS -> C ; CS\n");} 
         ;
+Comando: ComandoCombinado
+        | ComandoAberto
+        ;
+ComandoCombinado: IF Expr THEN ComandoCombinado ELSE ComandoCombinado 
+        | Atrib {printf("C -> A\n");}
+        | Repet {printf("C -> F\n");} 
+        | Leia {printf("C -> R\n");} 
+        | Escreva {printf("C -> W\n");}
+        ;
+ComandoAberto: IF Expr THEN Comando 
+        | IF Expr THEN ComandoCombinado ELSE ComandoAberto
+        ;
+Atrib: Id ATRIB Expr {printf("A -> ID atrib E\n");}
+        ;
+/*
 Comando: Atrib {printf("C -> A\n");} 
         | Condic {printf("C -> I\n");} 
         | Repet {printf("C -> F\n");} 
         | Leia {printf("C -> R\n");} 
         | Escreva {printf("C -> W\n");}
         ;
-Atrib: Id ATRIB Expr {printf("A -> ID atrib E\n");}
-        ;
 Condic: IF Expr THEN Comandos {printf("I -> se E entao CS\n");}
         | IF Expr THEN Comandos ELSE Comandos {printf("I -> se E entao CS senao CS\n");}
-        ;
-Repet: WHILE Expr DO Comandos {printf("F -> enquanto E faca CS\n");}
+        ;*/
+Repet: WHILE Expr DO ComandoCombinado {printf("F -> enquanto E faca CS\n");}
         ;
 Leia: READ PARENT_OPEN ID PARENT_CLOSE {printf("R -> leia (ID)\n");}
         ;
 Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("W -> escreva (ID)\n");}
         ;
 Expr: Simples {printf("E -> S\n");} 
-        | Simples OpRel Simples {printf("E -> S OR S\n");}
+        | Simples OpRel Expr {printf("E -> S OR S\n");}
         ;
 OpRel: DIFF {printf("OR -> <>\n");} 
         | EQUAL {printf("OR -> =\n");}
@@ -62,7 +75,7 @@ OpRel: DIFF {printf("OR -> <>\n");}
         | LESS_OR_EQUAL {printf("OR -> <=\n");}
         | GREATER_OR_EQUAL {printf("OR -> >=\n");}
         ;
-Simples: Termo Oper Termo {printf("S -> TE O TE\n");}
+Simples: Termo Oper Simples {printf("S -> TE O TE\n");}
         | Termo {printf("S -> TE\n");}
         ;
 Oper: PLUS {printf("O -> +\n");}
@@ -70,7 +83,7 @@ Oper: PLUS {printf("O -> +\n");}
         | OR {printf("O -> ou\n");}
         ;
 Termo: Fator {printf("TE -> FA\n");}
-        | Fator Op Fator {printf("TE -> FA OP FA\n");}
+        | Fator Op Termo {printf("TE -> FA OP FA\n");}
         ;
 Op: MULTIPLY {printf("OP -> * \n");}
         | DIVIDE {printf("OP -> div \n");}

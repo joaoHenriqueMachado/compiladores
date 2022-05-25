@@ -915,12 +915,12 @@ YY_RULE_SETUP
 case 39:
 YY_RULE_SETUP
 #line 63 "small_L.lex"
-//{printf("(<ERRO>,%d) ", lines); errCount++;}
+{printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 64 "small_L.lex"
-//{printf("(<ERRO>,%d) ", lines); errCount++;}
+{printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
@@ -945,17 +945,17 @@ YY_RULE_SETUP
 case 45:
 YY_RULE_SETUP
 #line 69 "small_L.lex"
-//{printf("(<ERRO>,%d) ", lines); errCount++;} 
+{printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 70 "small_L.lex"
-//{printf("(<ERRO>,%d) ", lines); errCount++;}
+{printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 71 "small_L.lex"
-//{printf("(<ERRO>,%d) ", lines); errCount++;}
+{printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
