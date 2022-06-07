@@ -18,36 +18,36 @@ int main();*/
 %right ATRIB
 %%
 
-S: PROGRAM Id SCOLON Bloco {printf("P -> programa ID ; B\nSintaticamente correto\n");}
+S: PROGRAM Id SCOLON Bloco {printf("P -> programa ID ; Bloco\nSintaticamente correto\n");}
   ;
-Bloco: VAR Decl START Comandos END {printf("B -> var D inicio CS fim\n");}
+Bloco: VAR Decl START Comandos END {printf("Bloco -> var Declaracao inicio Comandos fim\n");}
   ;
-Decl: Nome_Var DOUBLE_DOT Tipo SCOLON {printf("D -> NV : T ;\n");}
-        | Nome_Var DOUBLE_DOT Tipo SCOLON Decl {printf("D -> NV : T ; D\n");}
+Decl: Nome_Var DOUBLE_DOT Tipo SCOLON {printf("Declaracao -> Nome_var : Tipo ;\n");}
+        | Nome_Var DOUBLE_DOT Tipo SCOLON Decl {printf("Declaracao -> Nome_var : Tipo ; Declaracao\n");}
         ;
-Nome_Var: Id {printf("NV -> ID\n");} 
-        | Id COMMA Nome_Var {printf("NV -> ID comma NV\n");}
+Nome_Var: Id {printf("Nome_var -> ID\n");} 
+        | Id COMMA Nome_Var {printf("Nome_var -> ID , Nome_var\n");}
         ;
-Tipo: TYPE_INTEGER {printf("T -> inteiro\n");} 
-        | TYPE_FLOAT {printf("T -> real\n");} 
-        | TYPE_BOOLEAN {printf("T -> booleano\n");}
+Tipo: TYPE_INTEGER {printf("Tipo -> inteiro\n");} 
+        | TYPE_FLOAT {printf("Tipo -> real\n");} 
+        | TYPE_BOOLEAN {printf("Tipo -> booleano\n");}
         ;
-Comandos: Comando {printf("CS -> C \n");} 
-        | Comando SCOLON Comandos {printf("CS -> C ; CS\n");} 
+Comandos: Comando {printf("Comandos -> Comando \n");} 
+        | Comando SCOLON Comandos {printf("Comandos -> Comando ; Comandos\n");} 
         ;
 Comando: ComandoCombinado
         | ComandoAberto
         ;
 ComandoCombinado: IF Expr THEN ComandoCombinado ELSE ComandoCombinado 
-        | Atrib {printf("C -> A\n");}
-        | Repet {printf("C -> F\n");} 
-        | Leia {printf("C -> R\n");} 
-        | Escreva {printf("C -> W\n");}
+        | Atrib {printf("Comando -> Atribuicao\n");}
+        | Repet {printf("Comando -> Repeticao\n");} 
+        | Leia {printf("Comando -> Leitura\n");} 
+        | Escreva {printf("Comando -> Escrita\n");}
         ;
 ComandoAberto: IF Expr THEN Comando 
         | IF Expr THEN ComandoCombinado ELSE ComandoAberto
         ;
-Atrib: Id ATRIB Expr {printf("A -> ID atrib E\n");}
+Atrib: Id ATRIB Expr {printf("Atribuicao -> ID atrib E\n");}
         ;
 /*
 Comando: Atrib {printf("C -> A\n");} 
@@ -59,42 +59,42 @@ Comando: Atrib {printf("C -> A\n");}
 Condic: IF Expr THEN Comandos {printf("I -> se E entao CS\n");}
         | IF Expr THEN Comandos ELSE Comandos {printf("I -> se E entao CS senao CS\n");}
         ;*/
-Repet: WHILE Expr DO ComandoCombinado {printf("F -> enquanto E faca CS\n");}
+Repet: WHILE Expr DO ComandoCombinado {printf("Repeticao -> enquanto E faca CS\n");}
         ;
-Leia: READ PARENT_OPEN ID PARENT_CLOSE {printf("R -> leia (ID)\n");}
+Leia: READ PARENT_OPEN ID PARENT_CLOSE {printf("Leitura -> leia (ID)\n");}
         ;
-Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("W -> escreva (ID)\n");}
+Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("Escrita -> escreva (ID)\n");}
         ;
-Expr: Simples {printf("E -> S\n");} 
-        | Simples OpRel Simples {printf("E -> S OR S\n");}
+Expr: Simples {printf("Expressao -> Simples\n");} 
+        | Simples OpRel Simples {printf("Expressao -> Simples Operador_Relacional Simples\n");}
         ;
-OpRel: DIFF {printf("OR -> <>\n");} 
-        | EQUAL {printf("OR -> =\n");}
-        | LESS {printf("OR -> <\n");}
-        | GREATER {printf("OR -> >\n");}
-        | LESS_OR_EQUAL {printf("OR -> <=\n");}
-        | GREATER_OR_EQUAL {printf("OR -> >=\n");}
+OpRel: DIFF {printf("Operador_Relacional -> <>\n");} 
+        | EQUAL {printf("Operador_Relacional -> =\n");}
+        | LESS {printf("Operador_Relacional -> <\n");}
+        | GREATER {printf("Operador_Relacional -> >\n");}
+        | LESS_OR_EQUAL {printf("Operador_Relacional -> <=\n");}
+        | GREATER_OR_EQUAL {printf("Operador_Relacional -> >=\n");}
         ;
-Simples: Termo Oper Termo {printf("S -> TE O TE\n");}
-        | Termo {printf("S -> TE\n");}
+Simples: Termo Oper Termo {printf("Simples -> Termo Operador Termo\n");}
+        | Termo {printf("Simples -> Termo\n");}
         ;
-Oper: PLUS {printf("O -> +\n");}
-        | MINUS {printf("O -> -\n");}
-        | OR {printf("O -> ou\n");}
+Oper: PLUS {printf("Operador -> +\n");}
+        | MINUS {printf("Operador -> -\n");}
+        | OR {printf("Operador -> ou\n");}
         ;
-Termo: Fator {printf("TE -> FA\n");}
-        | Fator Op Fator {printf("TE -> FA OP FA\n");}
+Termo: Fator {printf("Termo -> Fator\n");}
+        | Fator Op Fator {printf("Termo -> Fator OP Fator\n");}
         ;
 Op: MULTIPLY {printf("OP -> * \n");}
         | DIVIDE {printf("OP -> div \n");}
         | AND {printf("OP -> e \n");}
         ;
-Fator: Id {printf("FA -> ID \n");}
-        | Num {printf("FA -> N \n");}
-        | PARENT_OPEN Expr PARENT_CLOSE {printf("FA -> (E) \n");}
-        | TRUE {printf("FA -> verdadeiro \n");}
-        | FALSE {printf("FA -> falso \n");}
-        | NOT Fator {printf("FA -> not FA \n");}
+Fator: Id {printf("Fator -> ID \n");}
+        | Num {printf("Fator -> N \n");}
+        | PARENT_OPEN Expr PARENT_CLOSE {printf("Fator -> (Expressao) \n");}
+        | TRUE {printf("Fator -> verdadeiro \n");}
+        | FALSE {printf("Fator -> falso \n");}
+        | NOT Fator {printf("Fator -> not FA \n");}
         ;
 Id: ID {printf("ID -> id \n");}
         ;
