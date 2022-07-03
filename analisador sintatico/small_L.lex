@@ -7,7 +7,7 @@
     #include "small_L_parser.tab.h"
     int lines = 1;
     int errCount = 0;
-    extern int yylval;
+    extern YYSTYPE yylval;
 %}
 id [a-zA-Z][0-9a-zA-Z_]*
 idErro {id}[^(\n\t" ")]+
@@ -25,47 +25,47 @@ prog "programa"
 \n                  {lines++;} 
 "{"[^}]*"}"         {/*Ignorar*/} 
 [[:space:]]         {/*Ignorar*/} 
-{prog}              {yylval = yytext[0]; return PROGRAM;}
-"booleano"          {yylval = yytext[0]; return TYPE_BOOLEAN;}
-"inteiro"           {yylval = yytext[0]; return TYPE_INTEGER;}
-"real"              {yylval = yytext[0]; return TYPE_FLOAT;}
-"var"               {yylval = yytext[0]; return VAR;}
-"inicio"            {yylval = yytext[0]; return START;}
-"fim"               {yylval = yytext[0]; return END;}
-"se"                {yylval = yytext[0]; return IF;}
-"entao"             {yylval = yytext[0]; return THEN;}
-"senao"             {yylval = yytext[0]; return ELSE;}
-"enquanto"          {yylval = yytext[0]; return WHILE;}
-"faca"              {yylval = yytext[0]; return DO;}
-"leia"              {yylval = yytext[0]; return READ;}
-"escreva"           {yylval = yytext[0]; return WRITE;}
-":="                {yylval = yytext[0]; return ATRIB;}
-":"                 {yylval = yytext[0]; return DOUBLE_DOT;}
-"="                 {yylval = yytext[0]; return EQUAL;}
-"<"                 {yylval = yytext[0]; return LESS;}
-">"                 {yylval = yytext[0]; return GREATER;}
-"<="                {yylval = yytext[0]; return LESS_OR_EQUAL;}
-"<>"                {yylval = yytext[0]; return DIFF;}
-">="                {yylval = yytext[0]; return GREATER_OR_EQUAL;}
-"+"                 {yylval = yytext[0]; return PLUS;}
-"-"                 {yylval = yytext[0]; return MINUS;}
-"ou"                {yylval = yytext[0]; return OR;}  
-"*"                 {yylval = yytext[0]; return MULTIPLY;}
-"div"               {yylval = yytext[0]; return DIVIDE;}
-"e"                 {yylval = yytext[0]; return AND;}
-"verdadeiro"        {yylval = yytext[0]; return TRUE;}   
-"falso"             {yylval = yytext[0]; return FALSE;}
-"nao"               {yylval = yytext[0]; return NOT;}
-";"                 {yylval = yytext[0]; return SCOLON;}  
-","                 {yylval = yytext[0]; return COMMA;}  
-"("                 {yylval = yytext[0]; return PARENT_OPEN;}  
-")"                 {yylval = yytext[0]; return PARENT_CLOSE;} 
+{prog}              {return PROGRAM;}
+"booleano"          {return TYPE_BOOLEAN;}
+"inteiro"           {return TYPE_INTEGER;}
+"real"              {return TYPE_FLOAT;}
+"var"               {return VAR;}
+"inicio"            {return START;}
+"fim"               {return END;}
+"se"                {return IF;}
+"entao"             {return THEN;}
+"senao"             {return ELSE;}
+"enquanto"          {return WHILE;}
+"faca"              {return DO;}
+"leia"              {return READ;}
+"escreva"           {return WRITE;}
+":="                {return ATRIB;}
+":"                 {return DOUBLE_DOT;}
+"="                 {return EQUAL;}
+"<"                 {return LESS;}
+">"                 {return GREATER;}
+"<="                {return LESS_OR_EQUAL;}
+"<>"                {return DIFF;}
+">="                {return GREATER_OR_EQUAL;}
+"+"                 {yylval.lex_value = yytext[0]; return PLUS;}
+"-"                 {yylval.lex_value = yytext[0]; return MINUS;}
+"ou"                {return OR;}  
+"*"                 {yylval.lex_value = yytext[0]; return MULTIPLY;}
+"div"               {yylval.lex_value = yytext[0]; return DIVIDE;}
+"e"                 {return AND;}
+"verdadeiro"        {return TRUE;}   
+"falso"             {return FALSE;}
+"nao"               {return NOT;}
+";"                 {return SCOLON;}  
+","                 {return COMMA;}  
+"("                 {return PARENT_OPEN;}  
+")"                 {return PARENT_CLOSE;} 
 {zeroErro}          {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 {zeroNegErro}       {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
-{booleano}          {yylval = yytext[0]; return NUM;}                  
-{real}              {yylval = yytext[0]; return NUM;} 
-{inteiro}           {yylval = yytext[0]; return NUM;}                  
-{id}                {yylval = yytext[0]; return ID;}
+{booleano}          {return NUM;}                  
+{real}              {return NUM;} 
+{inteiro}           {yylval.value = atoi(yytext); return NUM;}                  
+{id}                {yylval.lex_value = yytext[0]; return ID;}
 {digitoErro}        {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 {idErro}            {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 .                   {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 

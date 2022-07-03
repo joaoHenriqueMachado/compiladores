@@ -1,11 +1,10 @@
- programa maior ;
- var 
-  x , y : inteiro ;
-  inicio
-   leia ( x ) ; 
-   leia ( y ) ;
-   se ( x <= y ) entao 
-      escreva ( x ) 
-   senao 
-      escreva ( y )
+programa teste1 ;
+var
+ x , y : inteiro ;
+ inicio
+ x := 5 ;
+ y := 10 ;
+ x := x + x * y ;
+escreva ( x )
 fim
+

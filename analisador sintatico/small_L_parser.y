@@ -2,12 +2,15 @@
 #include <stdio.h>
 extern void yyerror(char const *message);
 extern int yylex(void);
-
-/*void yyerror(char *c);
-int yylex(void);
-int main();*/ 
+int memory[30];
 
 %}
+
+%union{
+        int value;
+        char lex_value;
+}
+
 %token PROGRAM TYPE_BOOLEAN TYPE_INTEGER TYPE_FLOAT VAR START END IF THEN ELSE WHILE DO READ WRITE ATRIB DOUBLE_DOT EQUAL LESS GREATER LESS_OR_EQUAL DIFF GREATER_OR_EQUAL PLUS MINUS OR MULTIPLY DIVIDE AND TRUE FALSE NOT SCOLON COMMA PARENT_OPEN PARENT_CLOSE NUM ID
 %right NOT
 %left MULTIPLY DIVIDE
@@ -16,6 +19,10 @@ int main();*/
 %left EQUAL DIFF
 %left TRUE FALSE
 %right ATRIB
+
+%type <value> Num Fator Termo Simples Expr Id
+%start S
+
 %%
 
 S: PROGRAM Id SCOLON Bloco {printf("P -> programa ID ; Bloco\nSintaticamente correto\n");}
@@ -47,26 +54,16 @@ ComandoCombinado: IF Expr THEN ComandoCombinado ELSE ComandoCombinado
 ComandoAberto: IF Expr THEN Comando 
         | IF Expr THEN ComandoCombinado ELSE ComandoAberto
         ;
-Atrib: Id ATRIB Expr {printf("Atribuicao -> ID atrib E\n");}
+Atrib: Id ATRIB Expr {printf("Atribuicao -> ID atrib E\n"); memory[$<lex_value>1 - 'a'] = $<value>3;}
         ;
-/*
-Comando: Atrib {printf("C -> A\n");} 
-        | Condic {printf("C -> I\n");} 
-        | Repet {printf("C -> F\n");} 
-        | Leia {printf("C -> R\n");} 
-        | Escreva {printf("C -> W\n");}
-        ;
-Condic: IF Expr THEN Comandos {printf("I -> se E entao CS\n");}
-        | IF Expr THEN Comandos ELSE Comandos {printf("I -> se E entao CS senao CS\n");}
-        ;*/
 Repet: WHILE Expr DO ComandoCombinado {printf("Repeticao -> enquanto E faca CS\n");}
         ;
 Leia: READ PARENT_OPEN ID PARENT_CLOSE {printf("Leitura -> leia (ID)\n");}
         ;
-Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("Escrita -> escreva (ID)\n");}
+Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("Escrita -> escreva (ID)\n"); printf("%d\n", memory[$<lex_value>3 - 'a']);}
         ;
 Expr: Simples {printf("Expressao -> Simples\n");} 
-        | Simples OpRel Simples {printf("Expressao -> Simples Operador_Relacional Simples\n");}
+        | Simples OpRel Simples {printf("Expressao -> Simples Operador_Relacional Simples\n"); $<value>$ = $<value>1;}
         ;
 OpRel: DIFF {printf("Operador_Relacional -> <>\n");} 
         | EQUAL {printf("Operador_Relacional -> =\n");}
@@ -75,40 +72,48 @@ OpRel: DIFF {printf("Operador_Relacional -> <>\n");}
         | LESS_OR_EQUAL {printf("Operador_Relacional -> <=\n");}
         | GREATER_OR_EQUAL {printf("Operador_Relacional -> >=\n");}
         ;
-Simples: Termo Oper Termo {printf("Simples -> Termo Operador Termo\n");}
-        | Termo {printf("Simples -> Termo\n");}
+Simples: Termo Oper Termo {printf("Simples -> Termo Operador Termo\n");
+        if($<lex_value>2 == '+'){
+                $<value>$ = $<value>1 + $<value>3;
+        }else if($<lex_value>2 == '-'){
+                $<value>$ = $<value>1 - $<value>3;
+        }
+        }
+        | Termo {printf("Simples -> Termo\n"); $<value>$ = $<value>1;}
         ;
 Oper: PLUS {printf("Operador -> +\n");}
         | MINUS {printf("Operador -> -\n");}
         | OR {printf("Operador -> ou\n");}
         ;
-Termo: Fator {printf("Termo -> Fator\n");}
-        | Fator Op Fator {printf("Termo -> Fator OP Fator\n");}
+Termo: Fator {printf("Termo -> Fator\n"); $<value>$ = $<value>1;}
+        | Fator Op Fator {printf("Termo -> Fator OP Fator\n");
+                if($<lex_value>2 == '*'){
+                        $<value>$ = $<value>1 * $<value>3;
+                }else if($<lex_value>2 == 'd'){
+                        $<value>$ = $<value>1 / $<value>3;
+                }
+        }
         ;
 Op: MULTIPLY {printf("OP -> * \n");}
         | DIVIDE {printf("OP -> div \n");}
         | AND {printf("OP -> e \n");}
         ;
-Fator: Id {printf("Fator -> ID \n");}
-        | Num {printf("Fator -> N \n");}
-        | PARENT_OPEN Expr PARENT_CLOSE {printf("Fator -> (Expressao) \n");}
+Fator: Id {printf("Fator -> ID \n");
+        $<value>$ = memory[$<lex_value>1 - 'a'];
+}
+        | Num {printf("Fator -> N \n");
+                $<value>$ = $<value>1;
+        }
+        | PARENT_OPEN Expr PARENT_CLOSE {printf("Fator -> (Expressao) \n");
+                $<value>$ = $<value>2;
+        }
         | TRUE {printf("Fator -> verdadeiro \n");}
         | FALSE {printf("Fator -> falso \n");}
         | NOT Fator {printf("Fator -> not FA \n");}
         ;
 Id: ID {printf("ID -> id \n");}
         ;
-Num: NUM {printf("N -> num \n");}
+Num: NUM {printf("N -> num \n"); $<value>$ = $<value>1;}
         ;
 %%
-
-/*
-void yyerror(char *c) {
- printf("Erro: %s\n", c);
-}
-
-int main() {
-  yyparse();
-  return 0;
-}*/
 
