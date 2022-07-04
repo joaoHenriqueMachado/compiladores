@@ -47,11 +47,11 @@ prog "programa"
 "<="                {return LESS_OR_EQUAL;}
 "<>"                {return DIFF;}
 ">="                {return GREATER_OR_EQUAL;}
-"+"                 {yylval.lex_value = yytext[0]; return PLUS;}
-"-"                 {yylval.lex_value = yytext[0]; return MINUS;}
+"+"                 {yylval.lex_value = strdup(yytext); return PLUS;}
+"-"                 {yylval.lex_value = strdup(yytext); return MINUS;}
 "ou"                {return OR;}  
-"*"                 {yylval.lex_value = yytext[0]; return MULTIPLY;}
-"div"               {yylval.lex_value = yytext[0]; return DIVIDE;}
+"*"                 {yylval.lex_value = strdup(yytext); return MULTIPLY;}
+"div"               {yylval.lex_value = strdup(yytext); return DIVIDE;}
 "e"                 {return AND;}
 "verdadeiro"        {return TRUE;}   
 "falso"             {return FALSE;}
@@ -65,7 +65,7 @@ prog "programa"
 {booleano}          {return NUM;}                  
 {real}              {return NUM;} 
 {inteiro}           {yylval.value = atoi(yytext); return NUM;}                  
-{id}                {yylval.lex_value = yytext[0]; return ID;}
+{id}                {yylval.lex_value = strdup(yytext); return ID;}
 {digitoErro}        {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 {idErro}            {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 .                   {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 

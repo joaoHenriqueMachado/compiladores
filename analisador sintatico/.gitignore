@@ -6,3 +6,4 @@ small_L_parser.o
 small_L_parser.tab.c
 small_L_parser.tab.h
 small_L.o
+storage.o

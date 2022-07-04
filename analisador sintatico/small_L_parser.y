@@ -1,14 +1,16 @@
 %{
 #include <stdio.h>
+#include <string.h>
+#include "storage.h"
 extern void yyerror(char const *message);
 extern int yylex(void);
-int memory[30];
+Storage *storage;
 
 %}
 
 %union{
         int value;
-        char lex_value;
+        char* lex_value;
 }
 
 %token PROGRAM TYPE_BOOLEAN TYPE_INTEGER TYPE_FLOAT VAR START END IF THEN ELSE WHILE DO READ WRITE ATRIB DOUBLE_DOT EQUAL LESS GREATER LESS_OR_EQUAL DIFF GREATER_OR_EQUAL PLUS MINUS OR MULTIPLY DIVIDE AND TRUE FALSE NOT SCOLON COMMA PARENT_OPEN PARENT_CLOSE NUM ID
@@ -25,7 +27,7 @@ int memory[30];
 
 %%
 
-S: PROGRAM Id SCOLON Bloco {printf("P -> programa ID ; Bloco\nSintaticamente correto\n");}
+S: PROGRAM Id SCOLON Bloco {printf("P -> programa ID ; Bloco\nSintaticamente correto\n"); clearStorage(storage);}
   ;
 Bloco: VAR Decl START Comandos END {printf("Bloco -> var Declaracao inicio Comandos fim\n");}
   ;
@@ -54,13 +56,16 @@ ComandoCombinado: IF Expr THEN ComandoCombinado ELSE ComandoCombinado
 ComandoAberto: IF Expr THEN Comando 
         | IF Expr THEN ComandoCombinado ELSE ComandoAberto
         ;
-Atrib: Id ATRIB Expr {printf("Atribuicao -> ID atrib E\n"); memory[$<lex_value>1 - 'a'] = $<value>3;}
+Atrib: Id ATRIB Expr {printf("Atribuicao -> ID atrib E\n"); if(isEmpty(storage)){
+        storage = createStorage();
+} insertBox(storage, $<lex_value>1, $<value>3);
+}
         ;
 Repet: WHILE Expr DO ComandoCombinado {printf("Repeticao -> enquanto E faca CS\n");}
         ;
 Leia: READ PARENT_OPEN ID PARENT_CLOSE {printf("Leitura -> leia (ID)\n");}
         ;
-Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("Escrita -> escreva (ID)\n"); printf("%d\n", memory[$<lex_value>3 - 'a']);}
+Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("Escrita -> escreva (ID)\n"); printf("%d\n", getValue(storage, $<lex_value>3));}
         ;
 Expr: Simples {printf("Expressao -> Simples\n");} 
         | Simples OpRel Simples {printf("Expressao -> Simples Operador_Relacional Simples\n"); $<value>$ = $<value>1;}
@@ -73,9 +78,9 @@ OpRel: DIFF {printf("Operador_Relacional -> <>\n");}
         | GREATER_OR_EQUAL {printf("Operador_Relacional -> >=\n");}
         ;
 Simples: Termo Oper Termo {printf("Simples -> Termo Operador Termo\n");
-        if($<lex_value>2 == '+'){
+        if(strcmp($<lex_value>2, "+") == 0){
                 $<value>$ = $<value>1 + $<value>3;
-        }else if($<lex_value>2 == '-'){
+        }else if(strcmp($<lex_value>2, "-") == 0){
                 $<value>$ = $<value>1 - $<value>3;
         }
         }
@@ -87,9 +92,9 @@ Oper: PLUS {printf("Operador -> +\n");}
         ;
 Termo: Fator {printf("Termo -> Fator\n"); $<value>$ = $<value>1;}
         | Fator Op Fator {printf("Termo -> Fator OP Fator\n");
-                if($<lex_value>2 == '*'){
+                if(strcmp($<lex_value>2, "*") == 0){
                         $<value>$ = $<value>1 * $<value>3;
-                }else if($<lex_value>2 == 'd'){
+                }else if(strcmp($<lex_value>2 , "div") == 0){
                         $<value>$ = $<value>1 / $<value>3;
                 }
         }
@@ -99,7 +104,7 @@ Op: MULTIPLY {printf("OP -> * \n");}
         | AND {printf("OP -> e \n");}
         ;
 Fator: Id {printf("Fator -> ID \n");
-        $<value>$ = memory[$<lex_value>1 - 'a'];
+        $<value>$ = getValue(storage, $<lex_value>1);
 }
         | Num {printf("Fator -> N \n");
                 $<value>$ = $<value>1;
