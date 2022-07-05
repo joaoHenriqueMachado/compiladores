@@ -67,8 +67,8 @@ Leia: READ PARENT_OPEN ID PARENT_CLOSE {printf("Leitura -> leia (ID)\n");}
         ;
 Escreva: WRITE PARENT_OPEN ID PARENT_CLOSE {printf("Escrita -> escreva (ID)\n"); printf("%d\n", getValue(storage, $<lex_value>3));}
         ;
-Expr: Simples {printf("Expressao -> Simples\n");} 
-        | Simples OpRel Simples {printf("Expressao -> Simples Operador_Relacional Simples\n"); $<value>$ = $<value>1;}
+Expr: Simples {printf("Expressao -> Simples\n"); $<value>$ = $<value>1;} 
+        | Simples OpRel Simples {printf("Expressao -> Simples Operador_Relacional Simples\n");}
         ;
 OpRel: DIFF {printf("Operador_Relacional -> <>\n");} 
         | EQUAL {printf("Operador_Relacional -> =\n");}
@@ -106,7 +106,7 @@ Op: MULTIPLY {printf("OP -> * \n");}
 Fator: Id {printf("Fator -> ID \n");
         $<value>$ = getValue(storage, $<lex_value>1);
 }
-        | Num {printf("Fator -> N \n");
+        | Num {printf("Fator -> Num \n");
                 $<value>$ = $<value>1;
         }
         | PARENT_OPEN Expr PARENT_CLOSE {printf("Fator -> (Expressao) \n");

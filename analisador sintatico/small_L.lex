@@ -62,7 +62,7 @@ prog "programa"
 ")"                 {return PARENT_CLOSE;} 
 {zeroErro}          {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
 {zeroNegErro}       {printf("Erro lexico na linha %d ", lines); errCount++; return -1;} 
-{booleano}          {return NUM;}                  
+{booleano}          {yylval.value = atoi(yytext); return NUM;}                  
 {real}              {return NUM;} 
 {inteiro}           {yylval.value = atoi(yytext); return NUM;}                  
 {id}                {yylval.lex_value = strdup(yytext); return ID;}
